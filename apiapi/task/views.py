@@ -1,8 +1,9 @@
 # from django.shortcuts import HttpResponse
 from django.http import JsonResponse
+from tastypie.resources import ModelResource
 from . models import motor
 
-def index(request):
+# def index(request):
     # html = "<html><body>It is now</body></html>"
     # return HttpResponse(html)
 
@@ -17,16 +18,19 @@ def index(request):
     #     }
     # ]
     # return JsonResponse({'html': html})
-    data = motor.objects.all()
+    # data = motor.objects.all()
 
-    simpan = []
-    for x in data:
-        simpan.append({
-            'merek': x.merek,
-            'kecepatan': x.kecepatan,
-        })
+    # simpan = []
+    # for x in data:
+    #     simpan.append({
+    #         'merek': x.merek,
+    #         'kecepatan': x.kecepatan,
+    #     })
 
-    return JsonResponse({
-        'data': simpan
-    }, safe=False)
-    
+    # return JsonResponse({
+    #     'data': simpan
+    # }, safe=False)
+class NoteResource(ModelResource):
+    class Meta:
+        queryset = motor.objects.all()
+        resource_name = 'motor'
