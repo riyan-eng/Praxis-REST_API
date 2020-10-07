@@ -1,9 +1,10 @@
 # from django.shortcuts import HttpResponse
 from django.http import JsonResponse
-from tastypie.resources import ModelResource
+import json
+from django.forms.models import model_to_dict
 from . models import motor
 
-# def index(request):
+def index(request):
     # html = "<html><body>It is now</body></html>"
     # return HttpResponse(html)
 
@@ -18,19 +19,33 @@ from . models import motor
     #     }
     # ]
     # return JsonResponse({'html': html})
-    # data = motor.objects.all()
+    data = motor.objects.all()
 
-    # simpan = []
-    # for x in data:
-    #     simpan.append({
-    #         'merek': x.merek,
-    #         'kecepatan': x.kecepatan,
-    #     })
+    simpan = []
+    for x in data:
+        simpan.append({
+            'merek': x.merek,
+            'kecepatan': x.kecepatan,
+        })
 
-    # return JsonResponse({
-    #     'data': simpan
-    # }, safe=False)
-class NoteResource(ModelResource):
-    class Meta:
-        queryset = motor.objects.all()
-        resource_name = 'motor'
+    return JsonResponse({
+        'data': simpan
+    }, safe=False)
+
+def create(request):
+    if request.method == 'POST':
+        data_byte = request.body
+        data_string = str(data_byte, 'utf-8')
+        data = json.loads(data_string)
+
+        Motor = motor.objects.create(merek=data['merek'], kecepatan=data['kecepatan'])
+        return JsonResponse({
+            'data': model_to_dict(Motor),
+        })
+
+def detail(request, id):
+    if request.method == 'GET':
+        Motor = motor.objects.filter(pk=id).first()
+        return JsonResponse({
+            'data': model_to_dict(Motor),
+        })
