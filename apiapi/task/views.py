@@ -49,3 +49,22 @@ def detail(request, id):
         return JsonResponse({
             'data': model_to_dict(Motor),
         })
+def delete(request, id):
+    if request.method == 'DELETE':
+        Motor = motor.objects.filter(pk=id).delete()
+        return JsonResponse({
+            'msg': 'data has been delete'
+        })
+
+def update(request, id):
+    if request.method == 'PUT':
+        data_byte = request.body
+        data_string = str(data_byte, 'utf-8')
+        data = json.loads(data_string)
+
+        Motor = motor.objects.filter(pk=id).update(merek=data['merek'], kecepatan=data['kecepatan'])
+        Motor = motor.objects.filter(pk=id).first()
+
+        return JsonResponse({
+            'data': model_to_dict(Motor),
+        })
